@@ -1,0 +1,45 @@
+name: CI — Guichet Numérique Citoyen
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check src/ tests/
+      - run: ruff format --check src/ tests/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run tests
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          APP_ENV: test
+        run: pytest tests/ -v --tb=short -x
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t egov-maroc-agent:${{ github.sha }} .
+      - name: Verify image
+        run: docker run --rm egov-maroc-agent:${{ github.sha }} python -c "from src.config import get_settings; print('OK')"
