@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import uuid
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from fastapi.openapi.docs import get_swagger_ui_html
 from langchain_core.messages import HumanMessage
 
 from src.config import get_settings
@@ -33,11 +37,14 @@ async def lifespan(application: FastAPI):
 
 
 app = FastAPI(
-    title="Guichet Numérique Citoyen — e-Gov Maroc",
+    title="Idaraty — Guichet Numérique Citoyen",
     description="Architecture multi-agent LangGraph (Supervisor) pour les services publics marocains",
     version="1.0.0",
     lifespan=lifespan,
+    docs_url=None,
 )
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 # ── Middleware ────────────────────────────────────────────────
 app.add_middleware(CorrelationIdMiddleware)
@@ -153,3 +160,29 @@ async def agent_card():
             "cloud": "Render / Railway",
         },
     )
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+async def read_index():
+    """Serves the main frontend page for Idaraty."""
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "index.html")
+    with open(template_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content)
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    """Serves Swagger UI with custom branding and dark theme CSS."""
+    response = get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title="Idaraty — Documentation API",
+        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
+        swagger_ui_parameters={"defaultModelsExpandDepth": -1},
+    )
+    # Inject custom CSS dynamically for compatibility with older FastAPI versions
+    html_content = response.body.decode("utf-8")
+    custom_css_link = '<link rel="stylesheet" href="/static/custom_swagger.css">'
+    html_content = html_content.replace("</head>", f"{custom_css_link}</head>")
+    return HTMLResponse(content=html_content)

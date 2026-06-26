@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارتي - الشباك الرقمي للمواطن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* L-alwan r-rasmiya dyal idarati.ma */
+            --primary-green: #006233;
+            --primary-red: #C1272D;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 4px solid var(--primary-red);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-badge {
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #28a745;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(0, 98, 51, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+        .input-row .form-group {
+            flex: 1;
+        }
+        .btn-submit {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #004d28;
+        }
+        .btn-submit:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .orchestrator-flow {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .flow-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .step {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: #f8f9fa;
+        }
+        .step.active {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+            background: rgba(0, 98, 51, 0.05);
+            font-weight: 700;
+        }
+        
+        /* Box dyal Jawab */
+        .result-box {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid var(--primary-green);
+            border-radius: 8px;
+            background-color: #f2f9f5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .result-title {
+            color: var(--primary-green);
+            margin-top: 0;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #cce5d6;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .agent-badge {
+            font-size: 0.85rem;
+            color: #555;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            border: 1px solid #cce5d6;
+        }
+        .agent-badge span {
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+        .result-text {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+        
+        /* Sidebar styles */
+        .sidebar-card {
+            background-color: var(--card-bg);
+        }
+        .sidebar-title {
+            color: var(--primary-red);
+        }
+        .sidebar-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .agent-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background-color: #fcfcfc;
+        }
+        .agent-name {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .agent-role {
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .input-row {
+                flex-direction: column;
+            }
+            .flow-steps {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="navbar-brand">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        إدارتي - الشباك الرقمي للمواطن
+    </div>
+    <div class="status-badge">
+        <span class="status-dot"></span>
+        النظام متصل
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2 class="card-title">تقديم طلب إداري</h2>
+        
+        <div class="form-group">
+            <label for="message">ما هو طلبك الإداري؟</label>
+            <textarea id="message" placeholder="مثال: السلام عليكم، بغيت نسول على الوثائق المطلوبة لتجديد البطاقة الوطنية..."></textarea>
+        </div>
+        
+        <div class="input-row">
+            <div class="form-group">
+                <label for="cin">رقم البطاقة الوطنية (اختياري)</label>
+                <input type="text" id="cin" placeholder="مثال: J2128410">
+            </div>
+            <div class="form-group">
+                <label for="ville">المدينة (اختياري)</label>
+                <input type="text" id="ville" placeholder="مثال: الرباط">
+            </div>
+        </div>
+        
+        <button class="btn-submit">إرسال الطلب</button>
+        
+        <div class="orchestrator-flow">
+            <div class="flow-title">مسار معالجة الطلب (Supervisor)</div>
+            <div class="flow-steps">
+                <div class="step active">1. التوجيه (Triage)</div>
+                <div class="step">2. الوثائق (Document)</div>
+                <div class="step">3. المراقبة (Monitoring)</div>
+                <div class="step">4. مكتمل</div>
+            </div>
+        </div>
+
+        <div id="result-box" class="result-box">
+            <h3 class="result-title">
+                رد الإدارة المكتوب 
+                <span class="agent-badge">
+                    الوكيل المكلف: <span id="res-agent"></span>
+                </span>
+            </h3>
+            <div id="res-text" class="result-text"></div>
+        </div>
+    </div>
+
+    <div class="card sidebar-card">
+        <h2 class="card-title sidebar-title">نظام التوجيه الذكي</h2>
+        <p class="sidebar-desc">
+            يستخدم هذا النظام اللامركزي "مشرفاً" (Supervisor) ذكياً لتحليل طلبك وتوجيهه تلقائياً إلى الوكيل الإداري المختص.
+        </p>
+        
+        <div class="agent-list">
+            <div class="agent-item">
+                <span class="agent-name">التوجيه (TRIAGE)</span>
+                <span class="agent-role">تصنيف الطلبات</span>
+            </div>
+            <div class="agent-item">
+                <span class="agent-name">الوثائق (DOCUMENT)</span>
+                <span class="agent-role">المساطر الإدارية</span>
+            </div>
+            <div class="agent-item">
+                <span class="agent-name">الشكايات (RECLAMATION)</span>
+                <span class="agent-role">شكايات المواطنين</span>
+            </div>
+            <div class="agent-item">
+                <span class="agent-name">الدليل (GUIDE)</span>
+                <span class="agent-role">توجيه الإجراءات</span>
+            </div>
+            <div class="agent-item">
+                <span class="agent-name">المراقبة (MONITORING)</span>
+                <span class="agent-role">التتبع والتنبيهات</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.btn-submit').addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const message = document.getElementById('message').value.trim();
+        const cin = document.getElementById('cin').value.trim();
+        const ville = document.getElementById('ville').value.trim();
+        const resultBox = document.getElementById('result-box');
+        const resText = document.getElementById('res-text');
+        const resAgent = document.getElementById('res-agent');
+        
+        if (!message) {
+            alert("المرجوا إدخال تفاصيل الطلب الإداري أولاً.");
+            return;
+        }
+
+        const btn = document.querySelector('.btn-submit');
+        const originalText = btn.innerText;
+        btn.innerText = "جاري المعالجة... المرجو الانتظار";
+        btn.disabled = true;
+        
+        // Khbe3 l-box dyal l-jawab f l-auwel
+        resultBox.style.display = 'none';
+        
+        const requestBody = { message: message };
+        if (cin !== "") requestBody.cin = cin;
+        if (ville !== "") requestBody.ville = ville;
+        
+        try {
+            const response = await fetch('/invoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+            
+            const result = await response.json();
+            
+            if(response.ok) {
+                // Biyyen l-jawab
+                resAgent.innerText = (result.agent_utilise || "غير معروف").toUpperCase();
+                resText.innerText = result.reponse || "لم يتم تقديم إجابة.";
+                resultBox.style.display = 'block'; 
+                
+                // Hbet l-page l-te7t
+                resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                console.error("Erreur:", result);
+                alert("FastAPI Error:\n" + (result.detail || JSON.stringify(result)));
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert("حدث خطأ في الاتصال بالسيرفر. المرجو التأكد من أن السيرفر يعمل.");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

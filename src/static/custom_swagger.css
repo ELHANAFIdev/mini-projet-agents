@@ -1,0 +1,82 @@
+body {
+    background-color: #0b0f19 !important;
+    color: #e2e8f0 !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+.swagger-ui {
+    background-color: #0b0f19 !important;
+    color: #e2e8f0 !important;
+}
+.swagger-ui .topbar {
+    background-color: #0f172a !important;
+    border-bottom: 2px solid #006241 !important;
+}
+.swagger-ui .info .title {
+    color: #ffffff !important;
+}
+.swagger-ui .info p, .swagger-ui .info a, .swagger-ui .info li {
+    color: #94a3b8 !important;
+}
+.swagger-ui .opblock {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    border-radius: 8px !important;
+}
+.swagger-ui .opblock .opblock-summary {
+    border-bottom-color: #334155 !important;
+}
+.swagger-ui .opblock-post {
+    border-color: #006241 !important;
+    background: rgba(0, 98, 65, 0.05) !important;
+}
+.swagger-ui .opblock-post .opblock-summary {
+    background: rgba(0, 98, 65, 0.1) !important;
+}
+.swagger-ui .opblock-post .opblock-summary-method {
+    background: #006241 !important;
+    border-radius: 4px !important;
+}
+.swagger-ui .opblock-get {
+    border-color: #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.05) !important;
+}
+.swagger-ui .opblock-get .opblock-summary {
+    background: rgba(59, 130, 246, 0.1) !important;
+}
+.swagger-ui .opblock-get .opblock-summary-method {
+    background: #3b82f6 !important;
+    border-radius: 4px !important;
+}
+.swagger-ui .scheme-container {
+    background-color: #0f172a !important;
+    box-shadow: none !important;
+    border: 1px solid #1e293b !important;
+    border-radius: 8px !important;
+}
+.swagger-ui input[type=text], .swagger-ui section.models {
+    background-color: #0f172a !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155 !important;
+}
+.swagger-ui .model-box {
+    background-color: #0f172a !important;
+}
+.swagger-ui table thead tr th {
+    color: #94a3b8 !important;
+    border-bottom: 2px solid #334155 !important;
+}
+.swagger-ui .response-col_status, .swagger-ui .response-col_links {
+    color: #e2e8f0 !important;
+}
+.swagger-ui button.authorization__btn {
+    fill: #D4AF37 !important;
+}
+.swagger-ui .btn.execute {
+    background-color: #006241 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+}
+.swagger-ui .btn.execute:hover {
+    background-color: #00875a !important;
+}
